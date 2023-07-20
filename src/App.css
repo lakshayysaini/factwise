@@ -10,11 +10,18 @@
     max-width: 800px;
 }
 
+.accordion-container {
+    width: 100%;
+    max-width: 700px;
+}
+
 .user-item {
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    /* Change to column to stack image and details */
+    align-items: flex-start;
+    /* Align items to the left side */
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 10px;
@@ -51,17 +58,22 @@
     color: #666;
 }
 
-.accordion-icon {
-    font-size: 24px;
-    transition: transform 0.3s ease;
-}
-
 .user-details {
     max-height: 0;
-    padding: 10px;
-    border-radius: 0 0 10px 10px;
-    background-color: #f1f1f1;
     overflow: hidden;
+    /* Add the following styles for the smooth sliding effect */
+    width: 100%;
+    transition: max-height 0.3s ease;
+}
+
+.user-details.open {
+    margin-top: 20px;
+    max-height: 500px;
+    /* Adjust the height as needed */
+}
+
+.user-details.open .accordion-icon {
+    transform: rotate(180deg);
 }
 
 .user-gender,
@@ -88,4 +100,42 @@ input[type='text'] {
 
 button {
     margin-top: 5px;
+}
+
+
+/* Add styles for user header */
+
+.user-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* Adjust styles for accordion icon */
+
+.accordion-icon {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.user-details.open .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.user-name {
+    margin-left: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.edit-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
 }
