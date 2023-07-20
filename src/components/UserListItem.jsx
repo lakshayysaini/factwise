@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import EditableField from "./EditableField";
+import DeleteDialog from "./DeleteDialog";
 import {
   PencilIcon,
   ArrowDownIcon,
   ArrowUpIcon,
+  TrashIcon,
 } from "@heroicons/react/outline";
 
 const calculateAge = (dob) => {
@@ -23,6 +25,7 @@ const calculateAge = (dob) => {
 const UserListItem = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [name, setName] = useState(user.first);
   const [gender, setGender] = useState(user.gender);
   const [country, setCountry] = useState(user.country);
@@ -50,6 +53,17 @@ const UserListItem = ({ user }) => {
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
+  };
+
+  const handleDeleteToggle = () => {
+    setIsDeleteDialogOpen((prev) => !prev);
+  };
+
+  const handleDelete = () => {
+    // Handle the delete functionality here
+    console.log(`Deleting user with ID ${user.id}`);
+    // Close the delete dialog
+    setIsDeleteDialogOpen(false);
   };
 
   const handleSave = () => {
@@ -80,14 +94,16 @@ const UserListItem = ({ user }) => {
                 name
               )}
             </div>
-            <div className="user-age">{calculateAge(user.dob)}</div>
+            {/*<div className="user-age">{calculateAge(user.dob)}</div>*/}
           </div>
         </div>
-        <div className="accordion-icon" onClick={handleAccordionToggle}>
+        <div className="user-icons">
           {isOpen ? (
-            <ArrowUpIcon className="icon" />
+            <>
+              <ArrowUpIcon className="icon" onClick={handleAccordionToggle} />
+            </>
           ) : (
-            <ArrowDownIcon className="icon" />
+            <ArrowDownIcon className="icon" onClick={handleAccordionToggle} />
           )}
         </div>
       </div>
@@ -140,6 +156,14 @@ const UserListItem = ({ user }) => {
               </button>
             ) : (
               <PencilIcon className="edit-icon" onClick={handleEditToggle} />
+            )}
+            {isDeleteDialogOpen ? (
+              <DeleteDialog
+                onCancel={handleDeleteToggle}
+                onDelete={handleDelete}
+              />
+            ) : (
+              <TrashIcon className="delete-icon" onClick={handleDeleteToggle} />
             )}
           </div>
         )}
