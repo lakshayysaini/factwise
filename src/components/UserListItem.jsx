@@ -26,8 +26,18 @@ const UserListItem = ({ user }) => {
   const [description, setDescription] = useState(user.description);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  const genderOptions = [
+    "Male",
+    "Female",
+    "Transgender",
+    "Rather not say",
+    "Other",
+  ];
+
   const handleAccordionToggle = () => {
-    setIsOpen((prev) => !prev);
+    if (!isEditing) {
+      setIsOpen((prev) => !prev);
+    }
   };
 
   const handleNameChange = (e) => {
@@ -39,7 +49,11 @@ const UserListItem = ({ user }) => {
   };
 
   const handleCountryChange = (e) => {
-    setCountry(e.target.value);
+    // Ensure that the input contains only letters, spaces, and hyphens
+    const regex = /^[A-Za-z -]+$/;
+    if (regex.test(e.target.value) || e.target.value === "") {
+      setCountry(e.target.value);
+    }
   };
 
   const handleDescriptionChange = (e) => {
@@ -47,7 +61,10 @@ const UserListItem = ({ user }) => {
   };
 
   const handleEditToggle = () => {
-    setIsEditing((prev) => !prev);
+    // Disable edit mode if the user is below 18
+    if (calculateAge(user.dob) >= 18) {
+      setIsEditing((prev) => !prev);
+    }
   };
 
   const handleSave = () => {
@@ -107,16 +124,32 @@ const UserListItem = ({ user }) => {
       <div className={`user-details ${isOpen ? "open" : ""}`}>
         {isOpen && (
           <>
-            <div className="user-info">
-              <div className="user-age">Age: {calculateAge(user.dob)}</div>
+          <div className="user-info">
+              <div className="user-age">
+                {/* Make the age field editable and disable input */}
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={calculateAge(user.dob)}
+                    disabled
+                  />
+                ) : (
+                  `Age: ${calculateAge(user.dob)}`
+                )}
+              </div>
               <div className="user-gender">
                 <label>Gender:</label>
-                <EditableField
-                  initialValue={gender}
-                  onSave={handleSave}
-                  isEditing={isEditing}
-                  onChange={handleGenderChange}
-                />
+                {isEditing ? (
+                  <select value={gender} onChange={handleGenderChange}>
+                    {genderOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  gender
+                )}
               </div>
               <div className="user-country">
                 <label>Country:</label>
@@ -128,14 +161,17 @@ const UserListItem = ({ user }) => {
                 />
               </div>
             </div>
-            <div className="user-description">
+             <div className="user-description">
               <label>Description:</label>
-              <EditableField
-                initialValue={description}
-                onSave={handleSave}
-                isEditing={isEditing}
-                onChange={handleDescriptionChange}
-              />
+              {isEditing ? (
+                <textarea
+                  value={description}
+                  onChange={handleDescriptionChange}
+                  rows="5" // Set the rows attribute to make it multiline
+                />
+              ) : (
+                description
+              )}
             </div>
           </>
         )}
