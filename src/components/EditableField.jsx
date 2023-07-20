@@ -1,27 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const EditableField = ({ initialValue, onSave }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(initialValue);
-
-  const handleSave = () => {
-    onSave(value);
-    setIsEditing(false);
-  };
-
+const EditableField = ({ initialValue, onSave, isEditing, onChange }) => {
   return (
     <div>
       {isEditing ? (
         <div>
           <input
             type="text"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            value={initialValue}
+            onChange={onChange}
           />
-          <button onClick={handleSave}>Save</button>
         </div>
       ) : (
-        <div onClick={() => setIsEditing(true)}>{value}</div>
+        <div>{initialValue}</div>
       )}
     </div>
   );

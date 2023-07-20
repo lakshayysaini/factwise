@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import EditableField from "./EditableField";
 import DeleteDialog from "./DeleteDialog";
-import {
-  PencilIcon,
-  ArrowDownIcon,
-  ArrowUpIcon,
-  TrashIcon,
-} from "@heroicons/react/outline";
+import { PencilIcon, ArrowDownIcon, ArrowUpIcon, TrashIcon } from "@heroicons/react/outline";
 
 const calculateAge = (dob) => {
   const birthDate = new Date(dob);
@@ -25,34 +20,45 @@ const calculateAge = (dob) => {
 const UserListItem = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [name, setName] = useState(user.first);
   const [gender, setGender] = useState(user.gender);
   const [country, setCountry] = useState(user.country);
   const [description, setDescription] = useState(user.description);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleAccordionToggle = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const handleNameChange = (newValue) => {
-    setName(newValue);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
-  const handleGenderChange = (newValue) => {
-    setGender(newValue);
+  const handleGenderChange = (e) => {
+    setGender(e.target.value);
   };
 
-  const handleCountryChange = (newValue) => {
-    setCountry(newValue);
+  const handleCountryChange = (e) => {
+    setCountry(e.target.value);
   };
 
-  const handleDescriptionChange = (newValue) => {
-    setDescription(newValue);
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
   };
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
+  };
+
+  const handleSave = () => {
+    // Save changes here, you can call the API or perform any other actions
+    console.log('Name:', name);
+    console.log('Gender:', gender);
+    console.log('Country:', country);
+    console.log('Description:', description);
+
+    // Close edit mode
+    setIsEditing(false);
   };
 
   const handleDeleteToggle = () => {
@@ -66,35 +72,26 @@ const UserListItem = ({ user }) => {
     setIsDeleteDialogOpen(false);
   };
 
-  const handleSave = () => {
-    // Save changes here, you can call the API or perform any other actions
-    console.log("Name:", name);
-    console.log("Gender:", gender);
-    console.log("Country:", country);
-    console.log("Description:", description);
-
-    // Close edit mode
-    setIsEditing(false);
-  };
-
   return (
     <div className="user-item">
       <div className="user-header">
         <div className="user-info">
-          <img src={user.picture} alt={user.first} />
+          <div className="user-image">
+            <img src={user.picture} alt={user.first} />
+          </div>
           <div>
             <div className="user-name">
               {isOpen ? (
                 <EditableField
                   initialValue={name}
-                  onSave={handleNameChange}
+                  onSave={handleSave}
                   isEditing={isEditing}
+                  onChange={handleNameChange}
                 />
               ) : (
                 name
               )}
             </div>
-            {/*<div className="user-age">{calculateAge(user.dob)}</div>*/}
           </div>
         </div>
         <div className="user-icons">
@@ -110,47 +107,41 @@ const UserListItem = ({ user }) => {
       <div className={`user-details ${isOpen ? "open" : ""}`}>
         {isOpen && (
           <>
-            <div className="user-gender">
-              <label>Gender:</label>
-              {isEditing ? (
+            <div className="user-info">
+              <div className="user-age">Age: {calculateAge(user.dob)}</div>
+              <div className="user-gender">
+                <label>Gender:</label>
                 <EditableField
                   initialValue={gender}
-                  onSave={handleGenderChange}
+                  onSave={handleSave}
                   isEditing={isEditing}
+                  onChange={handleGenderChange}
                 />
-              ) : (
-                gender
-              )}
-            </div>
-            <div className="user-country">
-              <label>Country:</label>
-              {isEditing ? (
+              </div>
+              <div className="user-country">
+                <label>Country:</label>
                 <EditableField
                   initialValue={country}
-                  onSave={handleCountryChange}
+                  onSave={handleSave}
                   isEditing={isEditing}
+                  onChange={handleCountryChange}
                 />
-              ) : (
-                country
-              )}
+              </div>
             </div>
             <div className="user-description">
               <label>Description:</label>
-              {isEditing ? (
-                <EditableField
-                  initialValue={description}
-                  onSave={handleDescriptionChange}
-                  isEditing={isEditing}
-                />
-              ) : (
-                description
-              )}
+              <EditableField
+                initialValue={description}
+                onSave={handleSave}
+                isEditing={isEditing}
+                onChange={handleDescriptionChange}
+              />
             </div>
           </>
         )}
         {isOpen && (
           <div className="edit-button-container">
-            {isEditing ? (
+          {isEditing ? (
               <button className="save-button" onClick={handleSave}>
                 Save
               </button>
