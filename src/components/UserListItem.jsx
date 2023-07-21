@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import EditableField from "./EditableField";
 import DeleteDialog from "./DeleteDialog";
-import { PencilIcon, ArrowDownIcon, ArrowUpIcon, TrashIcon } from "@heroicons/react/outline";
+import {
+  PencilIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+  TrashIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from "@heroicons/react/outline";
 
 const calculateAge = (dob) => {
   const birthDate = new Date(dob);
@@ -17,7 +24,7 @@ const calculateAge = (dob) => {
   return age;
 };
 
-const UserListItem = ({ user }) => {
+const UserListItem = ({ user, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user.first);
@@ -25,6 +32,7 @@ const UserListItem = ({ user }) => {
   const [country, setCountry] = useState(user.country);
   const [description, setDescription] = useState(user.description);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [age, setAge] = useState(calculateAge(user.dob).toString());
 
   const genderOptions = [
     "Male",
@@ -56,6 +64,12 @@ const UserListItem = ({ user }) => {
     }
   };
 
+  const handleAgeChange = (e) => {
+    // Restrict the input to accept only numeric values
+    let numericValue = e.target.value.replace(/\D/, "");
+    setAge(numericValue);
+  };
+
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
@@ -68,13 +82,34 @@ const UserListItem = ({ user }) => {
   };
 
   const handleSave = () => {
+    if (!name || !gender || !country || !description || !age) {
+      alert("Please fill out all required fields.");
+      return;
+    }
     // Save changes here, you can call the API or perform any other actions
-    console.log('Name:', name);
-    console.log('Gender:', gender);
-    console.log('Country:', country);
-    console.log('Description:', description);
-
+    console.log("Name:", name);
+    console.log("Gender:", gender);
+    console.log("Country:", country);
+    console.log("Description:", description);
+  
+    // Update the user object with the new age
+    const updatedUser = { ...user, first: name, gender, country, description, dob: new Date().getFullYear() - age };
+  
+    // Save the updated user object or perform other actions with it
+    console.log("Updated User:", updatedUser);
+  
     // Close edit mode
+    setIsEditing(false);
+  };
+  
+
+  const handleCancel = () => {
+    setName(user.first);
+    setGender(user.gender);
+    setCountry(user.country);
+    setDescription(user.description);
+    setAge(calculateAge(user.dob).toString());
+
     setIsEditing(false);
   };
 
@@ -84,7 +119,7 @@ const UserListItem = ({ user }) => {
 
   const handleDelete = () => {
     // Handle the delete functionality here
-    console.log(`Deleting user with ID ${user.id}`);
+    onDelete();
     // Close the delete dialog
     setIsDeleteDialogOpen(false);
   };
@@ -124,21 +159,22 @@ const UserListItem = ({ user }) => {
       <div className={`user-details ${isOpen ? "open" : ""}`}>
         {isOpen && (
           <>
-          <div className="user-info">
-              <div className="user-age">
-                {/* Make the age field editable and disable input */}
+            <div className="user-info">
+              <div className="user-gender">
+                <label>Age</label>
                 {isEditing ? (
                   <input
                     type="text"
-                    value={calculateAge(user.dob)}
-                    disabled
+                    value={age}
+                    onChange={handleAgeChange}
+                    maxLength={2} // Limit the input to 2 characters (assumed max age of 99)
                   />
                 ) : (
-                  `Age: ${calculateAge(user.dob)}`
+                  calculateAge(user.dob)
                 )}
               </div>
               <div className="user-gender">
-                <label>Gender:</label>
+                <label>Gender</label>
                 {isEditing ? (
                   <select value={gender} onChange={handleGenderChange}>
                     {genderOptions.map((option) => (
@@ -152,7 +188,7 @@ const UserListItem = ({ user }) => {
                 )}
               </div>
               <div className="user-country">
-                <label>Country:</label>
+                <label>Country</label>
                 <EditableField
                   initialValue={country}
                   onSave={handleSave}
@@ -161,8 +197,8 @@ const UserListItem = ({ user }) => {
                 />
               </div>
             </div>
-             <div className="user-description">
-              <label>Description:</label>
+            <div className="user-description">
+              <label>Description</label>
               {isEditing ? (
                 <textarea
                   value={description}
@@ -177,10 +213,11 @@ const UserListItem = ({ user }) => {
         )}
         {isOpen && (
           <div className="edit-button-container">
-          {isEditing ? (
-              <button className="save-button" onClick={handleSave}>
-                Save
-              </button>
+            {isEditing ? (
+              <>
+                <CheckCircleIcon className="save-icon" onClick={handleSave} />
+                <XCircleIcon className="cancel-icon" onClick={handleCancel} />
+              </>
             ) : (
               <PencilIcon className="edit-icon" onClick={handleEditToggle} />
             )}

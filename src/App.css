@@ -28,7 +28,6 @@
     margin-bottom: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 1;
 }
 
 .user-item.open .user-details {
@@ -41,7 +40,6 @@
 .user-info {
     display: flex;
     justify-content: space-between;
-    width: 100%;
 }
 
 .user-info>* {
@@ -87,26 +85,13 @@
     margin-bottom: 5px;
 }
 
-
-/*textarea,
-input[type='text'] {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    max-width: 150px;
-}*/
-
 textarea {
     width: 100%;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    /* Set a larger max-width for description textarea */
     max-width: 97%;
-    /* Allow the description textarea to be multiline */
-    resize: both;
-    /* or 'both' to allow horizontal resizing as well */
+    resize: vertical;
 }
 
 input[type='text'] {
@@ -114,7 +99,6 @@ input[type='text'] {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    /* Remove max-width property to keep the input fields for Name and Country the same width */
 }
 
 button {
@@ -129,7 +113,12 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 1;
+}
+
+.search-bar {
+    width: 100%;
+    margin-bottom: 20px;
+    max-width: 700px;
 }
 
 
@@ -165,14 +154,27 @@ button {
 }
 
 .user-name {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: bold;
+    margin-top: 20px;
 }
 
 .edit-icon {
     width: 30px;
     height: 30px;
     color: darkblue;
+}
+
+.save-icon {
+    width: 30px;
+    height: 30px;
+    color: green;
+}
+
+.cancel-icon {
+    width: 30px;
+    height: 30px;
+    color: red;
 }
 
 .delete-icon {
@@ -190,7 +192,7 @@ button {
 /* Modal Overlay */
 
 .modal-overlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -208,10 +210,9 @@ button {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 90%;
-    padding: 20px;
-    z-index: 10;
+    max-width: 350px;
+    width: 100%;
+    padding: 10px;
 }
 
 
