@@ -2,7 +2,7 @@
 
 
 ## How you can run this project in you local machine?
-## only if you have access to this repository xD)
+## only if you have access to this repository xD
 
 1. clone this repository or download the zip file
 
